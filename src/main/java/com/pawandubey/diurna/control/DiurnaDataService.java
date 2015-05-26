@@ -15,10 +15,100 @@
  */
 package com.pawandubey.diurna.control;
 
+import com.pawandubey.diurna.api.Diurna;
+import com.pawandubey.diurna.model.Note;
+import com.pawandubey.diurna.model.ToDo;
+import com.pawandubey.diurna.model.User;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+
 /**
  *
  * @author Pawan Dubey pawandubey@outlook.com
  */
-public class DiurnaDataService {
+public class DiurnaDataService implements Diurna {
+
+    private final Connection connection;
+    private Statement statement;
+    private final String dbUserName;
+    private final String dbUserPassword;
+    private final String dbName;
+
+    public DiurnaDataService(String db, String user, String pass) throws SQLException {
+        this.dbName = db;
+        this.dbUserName = user;
+        this.dbUserPassword = pass;
+
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db, user, pass);
+        statement = connection.createStatement();
+    }
+
+    @Override
+    public User getUser(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean createUser(String id, String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean createNote(String id, String title, String content, String userId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Note getNote(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Note> getAllNotes() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean updateNote(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean deleteNote(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean createToDo(String id, String title, String userId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ToDo getToDo(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<ToDo> getAllToDos() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean updateToDo(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean deleteToDo(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,8 +81,16 @@ public class DiurnaDataService implements Diurna {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<User> getAllUsers() throws SQLException {
+        query = "SELECT * FROM user";
+        ResultSet rs = statement.executeQuery(query);
+        List<User> ulist = new ArrayList<>();
+        User user;
+        while (rs.next()) {
+            user = new User(String.valueOf(rs.getInt("id")), rs.getString("name"));
+            ulist.add(user);
+        }
+        return ulist;
     }
 
     @Override
@@ -91,6 +100,7 @@ public class DiurnaDataService implements Diurna {
         ps.setString(1, name);
         try {
             ps.executeUpdate();
+            ps.close();
         }
         catch (SQLException e) {
             return false;
@@ -99,28 +109,85 @@ public class DiurnaDataService implements Diurna {
     }
 
     @Override
-    public Boolean createNote(String id, String title, String content, String userId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean createNote(String title, String content, String userId) throws SQLException {
+        query = "INSERT INTO note(title, content, userid) VALUES(?,?,?)";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setString(1, title);
+        ps.setString(2, content);
+        ps.setInt(3, Integer.parseInt(userId));
+        try {
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException ex) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public Note getNote(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Note getNote(String id) throws SQLException {
+        query = "SELECT * FROM note WHERE id = ?";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setInt(1, Integer.parseInt(id));
+        ps.executeQuery();
+        ResultSet rs = ps.getResultSet();
+
+        if (rs.next()) {
+            Note note = new Note(String.valueOf(rs.getInt("id")), rs.getString("title"), rs.getString("content"), String.valueOf(rs.getInt("userid")));
+            ps.close();
+            return note;
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
-    public List<Note> getAllNotes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Note> getAllNotes(String userid) throws SQLException {
+        query = "SELECT * FROM note";
+        statement = connection.createStatement();
+        statement.executeQuery(query);
+        ResultSet rs = statement.getResultSet();
+        Note note;
+        List<Note> notes = new ArrayList<>();
+        while (rs.next()) {
+            note = new Note(String.valueOf(rs.getInt("id")), rs.getString("title"), rs.getString("content"), String.valueOf(rs.getInt("userid")));
+            notes.add(note);
+        }
+        return notes;
     }
 
     @Override
-    public Boolean updateNote(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean updateNote(String id, String title, String content) throws SQLException {
+        query = "UPDATE note SET title = ?, content = ? WHERE id = ?";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setString(1, title);
+        ps.setString(2, content);
+        ps.setInt(3, Integer.parseInt(id));
+        try {
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public Boolean deleteNote(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean deleteNote(String id) throws SQLException {
+        query = "DELETE FROM note WHERE id = ?";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setInt(1, Integer.parseInt(id));
+        try {
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override

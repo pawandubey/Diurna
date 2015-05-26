@@ -27,10 +27,10 @@ public class Note {
     private final String id;
 
     public Note(String id, String title, String content, String userId) {
-        this.id = id;
         this.title = title;
         this.content = content;
         this.userId = userId;
+        this.id = id;
     }
 
     /**

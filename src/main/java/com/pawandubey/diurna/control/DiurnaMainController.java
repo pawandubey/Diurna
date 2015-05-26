@@ -22,8 +22,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import spark.ResponseTransformer;
 import static spark.Spark.after;
+import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.post;
+import static spark.Spark.put;
 import spark.servlet.SparkApplication;
 /**
  *
@@ -37,9 +39,22 @@ public class DiurnaMainController implements SparkApplication {
     public void init() {
         try {
             service = new DiurnaDataService("diurna", USERNAME, PASSWORD);
+
+            get("/users", (req, res) -> service.getAllUsers(), new JsonTransformer());
+
             get("/users/:id", (req, res) -> service.getUser(req.params(":id")), new JsonTransformer());
 
             post("/users", (req, res) -> service.createUser(req.queryParams("name")), new JsonTransformer());
+
+            get("/users/:id/notes", (req, res) -> service.getAllNotes(req.params(":id")), new JsonTransformer());
+
+            get("/users/:id/notes/:noteid", (req, res) -> service.getNote(req.params(":noteid")), new JsonTransformer());
+
+            post("/users/:id/notes", (req, res) -> service.createNote(req.queryParams("title"), req.queryParams("content"), req.params(":id")), new JsonTransformer());
+
+            put("/users/:id/notes/:noteid", (req, res) -> service.updateNote(req.params(":id"), req.queryParams("title"), req.queryParams("content")), new JsonTransformer());
+
+            delete("/users/:id/notes/:noteid", (req, res) -> service.deleteNote(req.params(":noteid")), new JsonTransformer());
 
             after((req, res) -> {
                 res.type("application/json");

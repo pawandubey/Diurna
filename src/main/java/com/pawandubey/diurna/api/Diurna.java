@@ -33,13 +33,13 @@ public interface Diurna {
 
     public Boolean createUser(String name) throws SQLException;
 
-    public Boolean createNote(String id, String title, String content, String userId) throws SQLException;
+    public Boolean createNote(String title, String content, String userId) throws SQLException;
 
     public Note getNote(String id) throws SQLException;
 
-    public List<Note> getAllNotes() throws SQLException;
+    public List<Note> getAllNotes(String userid) throws SQLException;
 
-    public Boolean updateNote(String id) throws SQLException;
+    public Boolean updateNote(String id, String title, String content) throws SQLException;
 
     public Boolean deleteNote(String id) throws SQLException;
 

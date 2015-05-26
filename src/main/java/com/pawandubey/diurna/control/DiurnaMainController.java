@@ -15,17 +15,50 @@
  */
 package com.pawandubey.diurna.control;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import spark.ResponseTransformer;
+import static spark.Spark.after;
 import static spark.Spark.get;
+import static spark.Spark.post;
 import spark.servlet.SparkApplication;
 /**
  *
  * @author Pawan Dubey pawandubey@outlook.com
  */
 public class DiurnaMainController implements SparkApplication {
-
+    private DiurnaDataService service;
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "root";
     @Override
     public void init() {
-        get("/", (req, res) -> "Hello World");
+        try {
+            service = new DiurnaDataService("diurna", USERNAME, PASSWORD);
+            get("/users/:id", (req, res) -> service.getUser(req.params(":id")), new JsonTransformer());
+
+            post("/users", (req, res) -> service.createUser(req.queryParams("name")), new JsonTransformer());
+
+            after((req, res) -> {
+                res.type("application/json");
+            });
+        }
+        catch (SQLException ex) {
+            System.out.println("Exception occured : ");
+            System.out.println(ex.getMessage());
+            Logger.getLogger(DiurnaMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static class JsonTransformer implements ResponseTransformer {
+
+        @Override
+        public String render(Object o) throws Exception {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            return gson.toJson(o);
+        }
     }
 
 }

@@ -21,9 +21,13 @@ import com.pawandubey.diurna.model.ToDo;
 import com.pawandubey.diurna.model.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,19 +40,43 @@ public class DiurnaDataService implements Diurna {
     private final String dbUserName;
     private final String dbUserPassword;
     private final String dbName;
+    private String query;
 
     public DiurnaDataService(String db, String user, String pass) throws SQLException {
         this.dbName = db;
         this.dbUserName = user;
         this.dbUserPassword = pass;
-
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        }
+        catch (ClassNotFoundException ex) {
+            Logger.getLogger(DiurnaDataService.class.getName()).log(Level.SEVERE, null, ex);
+        }
         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db, user, pass);
+        if (connection.isValid(5)) {
+            System.out.println("Connection works");
+        }
+        else {
+            System.out.println("Doesnt work");
+        }
         statement = connection.createStatement();
     }
 
     @Override
-    public User getUser(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public User getUser(String id) throws SQLException {
+        query = "SELECT * FROM user WHERE id = ?";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setInt(1, Integer.parseInt(id));
+        ps.executeQuery();
+        ResultSet rs = ps.getResultSet();
+        if (rs.next()) {
+            User user = new User(String.valueOf(rs.getInt("id")), rs.getString("name"));
+            ps.close();
+            return user;
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -57,8 +85,17 @@ public class DiurnaDataService implements Diurna {
     }
 
     @Override
-    public Boolean createUser(String id, String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean createUser(String name) throws SQLException {
+        query = "INSERT INTO user(name) VALUES(?)";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setString(1, name);
+        try {
+            ps.executeUpdate();
+        }
+        catch (SQLException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override

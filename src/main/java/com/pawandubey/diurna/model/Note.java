@@ -22,6 +22,7 @@ package com.pawandubey.diurna.model;
 public class Note {
     private String title;
     private String content;
+    private String dateCreated;
     private final String userId;
     private final String id;
 
@@ -72,5 +73,13 @@ public class Note {
      */
     public String getId() {
         return id;
+    }
+
+    public void setDateCreated(String date) {
+        this.dateCreated = date;
+    }
+
+    public String getDateCreated() {
+        return this.dateCreated;
     }
 }

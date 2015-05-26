@@ -18,6 +18,7 @@ package com.pawandubey.diurna.api;
 import com.pawandubey.diurna.model.Note;
 import com.pawandubey.diurna.model.ToDo;
 import com.pawandubey.diurna.model.User;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -26,29 +27,29 @@ import java.util.List;
  */
 public interface Diurna {
 
-    public User getUser(String id);
+    public User getUser(String id) throws SQLException;
 
-    public List<User> getAllUsers();
+    public List<User> getAllUsers() throws SQLException;
 
-    public Boolean createUser(String id, String name);
+    public Boolean createUser(String name) throws SQLException;
 
-    public Boolean createNote(String id, String title, String content, String userId);
+    public Boolean createNote(String id, String title, String content, String userId) throws SQLException;
 
-    public Note getNote(String id);
+    public Note getNote(String id) throws SQLException;
 
-    public List<Note> getAllNotes();
+    public List<Note> getAllNotes() throws SQLException;
 
-    public Boolean updateNote(String id);
+    public Boolean updateNote(String id) throws SQLException;
 
-    public Boolean deleteNote(String id);
+    public Boolean deleteNote(String id) throws SQLException;
 
-    public Boolean createToDo(String id, String title, String userId);
+    public Boolean createToDo(String id, String title, String userId) throws SQLException;
 
-    public ToDo getToDo(String id);
+    public ToDo getToDo(String id) throws SQLException;
 
-    public List<ToDo> getAllToDos();
+    public List<ToDo> getAllToDos() throws SQLException;
 
-    public Boolean updateToDo(String id);
+    public Boolean updateToDo(String id) throws SQLException;
 
-    public Boolean deleteToDo(String id);
+    public Boolean deleteToDo(String id) throws SQLException;
 }

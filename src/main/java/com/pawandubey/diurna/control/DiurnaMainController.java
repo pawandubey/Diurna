@@ -17,16 +17,21 @@ package com.pawandubey.diurna.control;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.pawandubey.diurna.model.User;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import spark.ResponseTransformer;
-import static spark.Spark.after;
+import spark.Spark;
 import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
 import spark.servlet.SparkApplication;
+import spark.template.freemarker.FreeMarkerEngine;
 /**
  *
  * @author Pawan Dubey pawandubey@outlook.com
@@ -39,10 +44,35 @@ public class DiurnaMainController implements SparkApplication {
     public void init() {
         try {
             service = new DiurnaDataService("diurna", USERNAME, PASSWORD);
+            Map map = new HashMap();
 
-            get("/users", (req, res) -> service.getAllUsers(), new JsonTransformer());
+            get("/users", (req, res) -> {
+                List<User> userlist;
+                try {
+                    userlist = service.getAllUsers();
+                    map.clear();
+                    map.put("users", userlist);
+                }
+                catch (SQLException ex) {
+                    Logger.getLogger(DiurnaMainController.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-            get("/users/:id", (req, res) -> service.getUser(req.params(":id")), new JsonTransformer());
+                return Spark.modelAndView(map, "layout.ftl");
+            }, new FreeMarkerEngine());
+
+            get("/users/:id", (req, res) -> {
+                try {
+                    User user;
+                    map.clear();
+                    user = service.getUser(req.params(":id"));
+                    map.put("name", user.getUserName());
+                    map.put("id", user.getUserId());
+                }
+                catch (SQLException ex) {
+                    Logger.getLogger(DiurnaMainController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return Spark.modelAndView(map, "layout.ftl");
+            }, new FreeMarkerEngine());
 
             post("/users", (req, res) -> service.createUser(req.queryParams("name")), new JsonTransformer());
 
@@ -56,9 +86,25 @@ public class DiurnaMainController implements SparkApplication {
 
             delete("/users/:id/notes/:noteid", (req, res) -> service.deleteNote(req.params(":noteid")), new JsonTransformer());
 
-            after((req, res) -> {
-                res.type("application/json");
-            });
+            get("api/users", (req, res) -> service.getAllUsers(), new JsonTransformer());
+
+            get("api/users/:id", (req, res) -> service.getUser(req.params(":id")), new JsonTransformer());
+
+            post("api/users", (req, res) -> service.createUser(req.queryParams("name")), new JsonTransformer());
+
+            get("api/users/:id/notes", (req, res) -> service.getAllNotes(req.params(":id")), new JsonTransformer());
+
+            get("api/users/:id/notes/:noteid", (req, res) -> service.getNote(req.params(":noteid")), new JsonTransformer());
+
+            post("api/users/:id/notes", (req, res) -> service.createNote(req.queryParams("title"), req.queryParams("content"), req.params(":id")), new JsonTransformer());
+
+            put("api/users/:id/notes/:noteid", (req, res) -> service.updateNote(req.params(":id"), req.queryParams("title"), req.queryParams("content")), new JsonTransformer());
+
+            delete("api/users/:id/notes/:noteid", (req, res) -> service.deleteNote(req.params(":noteid")), new JsonTransformer());
+
+//            after((req, res) -> {
+//                res.type("application/json");
+//            });
         }
         catch (SQLException ex) {
             System.out.println("Exception occured : ");

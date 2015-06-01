@@ -13,11 +13,17 @@
         <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="css/bootstrap.css" type="text/css"/>
         <link rel="stylesheet" href="style.css" type="text/css">
+        <link rel="stylesheet" href="css/bootstrap.css" type="text/css"/>
+        <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css" type="text/css"/>
 
 
 
 
-        <!--link rel="stylesheet" href="main.css">
+
+
+
+        <!--link rel="stylesheet" href="main.css"-->
         <!--[if lt IE 9]>
         <script src="../../assets/js/ie8-responsive-file-warning.js">
         </script><![endif]-->
@@ -33,7 +39,6 @@
 
     </head>
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -73,5 +78,5 @@
     </body>
 </html>
 <script language="javascript">
-    <!--bmi_SafeAddOnload(bmi_load,"bmi_orig_img",0);//-->
+<!--bmi_SafeAddOnload(bmi_load,"bmi_orig_img",0);//-->
 </script>
